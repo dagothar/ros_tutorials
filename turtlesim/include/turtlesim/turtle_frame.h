@@ -92,8 +92,6 @@ private:
   typedef std::map<std::string, TurtlePtr> M_Turtle;
   M_Turtle turtles_;
   uint32_t id_counter_;
-  
-  QImage background_image_;
 
   QVector<QImage> turtle_images_;
 

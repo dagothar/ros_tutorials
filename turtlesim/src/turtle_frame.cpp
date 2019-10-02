@@ -63,12 +63,7 @@ TurtleFrame::TurtleFrame(QWidget* parent, Qt::WindowFlags f)
   nh_.setParam("background_r", DEFAULT_BG_R);
   nh_.setParam("background_g", DEFAULT_BG_G);
   nh_.setParam("background_b", DEFAULT_BG_B);
-  
-  if (nh_.hasParam("background_image")) {
-    std::string background_image_path;
-    nh_.getParam("background_image", background_image_path);
-    background_image_.load(QString::fromStdString(background_image_path));
-  }
+  nh_.setParam("background_image", ros::package::getPath("turtlesim") + "/images/map.png");
 
   QVector<QString> turtles;
   turtles.append("box-turtle.png");
@@ -196,7 +191,15 @@ std::string TurtleFrame::spawnTurtle(const std::string& name, float x, float y, 
 
 void TurtleFrame::clear()
 {
-  if (background_image_.isNull()) {
+  std::string background_image_path;
+  QImage background_image;
+
+  if (nh_.hasParam("background_image")) {
+    nh_.getParam("background_image", background_image_path);
+    background_image.load(QString::fromStdString(background_image_path));
+  }
+  
+  if (background_image.isNull()) {
     int r = DEFAULT_BG_R;
     int g = DEFAULT_BG_G;
     int b = DEFAULT_BG_B;
@@ -207,7 +210,7 @@ void TurtleFrame::clear()
 
     path_image_.fill(qRgb(r, g, b));
   } else {
-    path_image_ = background_image_.copy(0, 0, 500, 500);
+    path_image_ = background_image.copy(0, 0, 500, 500);
   }
   update();
 }
